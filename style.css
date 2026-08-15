@@ -106,6 +106,8 @@ main { overflow: auto; position: relative; }
 .col .head { fill: var(--grey); }
 .col .acc { font-size: 18px; fill: var(--grey); }
 .col .hint { font-family: var(--display); font-weight: 700; font-size: 22px; fill: var(--grey); }
+.col .hint.chordname { font-size: 30px; }
+.col .mark { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; fill: var(--felt); font-family: var(--text); }
 .col .hint.chord { font-size: 17px; letter-spacing: 0.04em; }
 .col .big-letter { font-family: var(--display); font-weight: 900; font-size: 74px; fill: var(--grey); }
 .col .big-letter.small { font-size: 30px; }

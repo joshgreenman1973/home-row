@@ -277,8 +277,8 @@
       this.main.append(
         el('section', { class: 'home' }, [
           el('div', { class: 'home-head' }, [
-            el('h1', {}, ['Nine lessons. ', el('span', { class: 'red' }, 'Middle C to a song with chords.')]),
-            el('p', { class: 'lede' }, 'It works like a typing tutor: home position first, then drills that score you on accuracy and speed, then reading, then songs. Plug in the piano and the app hears every key you press.'),
+            el('h1', {}, ['Ten lessons. ', el('span', { class: 'red' }, 'Middle C to Leonard Cohen.')]),
+            el('p', { class: 'lede' }, 'It works like a typing tutor: home position first, then drills that score you on accuracy and speed, then reading, then songs, then the chords under eight Leonard Cohen songs. Plug in the piano and the app hears every key you press.'),
           ]),
           list,
           trouble,
@@ -438,8 +438,12 @@
           s.rh.forEach((m) => drawNote(m, 'rh'));
           if (showStaff && showLetters) {
             const hint = (notes, y) => { if (!notes.length) return; const t = sv('text', { x, y, class: 'hint' + (notes.length > 1 ? ' chord' : ''), 'text-anchor': 'middle' }); t.textContent = notes.map(H.noteName).join(' '); col.append(t); };
-            hint(s.rh, trebleTop - 10); hint(s.lh, bassBottom + 24);
+            if (s.label) {
+              const t = sv('text', { x, y: trebleTop - 10, class: 'hint chordname', 'text-anchor': 'middle' }); t.textContent = s.label; col.append(t);
+              hint(s.lh, bassBottom + 24);
+            } else { hint(s.rh, trebleTop - 10); hint(s.lh, bassBottom + 24); }
           }
+          if (s.mark) { const mk = sv('text', { x: x - colW / 2 + 4, y: 16, class: 'mark' }); mk.textContent = s.mark.toUpperCase(); col.append(mk); }
           g.append(col); this.cols.push(col);
         });
       }
@@ -565,6 +569,8 @@
             el('p', {}, [el('b', {}, 'Android tablet, in Chrome: '), 'works. Open this page, plug in, and when Chrome asks whether the page may use MIDI devices, allow it. The status in the top right turns black and names the piano.']),
             el('p', {}, [el('b', {}, 'iPad: '), 'Safari, and every browser on iPad, cannot see MIDI devices. Use the Android tablet or a laptop.']),
             el('p', {}, [el('b', {}, 'Mac or PC, in Chrome or Edge: '), 'works, with a USB-B to USB-A or USB-C cable.']),
+            el('h3', {}, 'Make it an app'),
+            el('p', {}, 'On the tablet, open this page in Chrome, tap the three-dot menu, then "Add to Home screen" (or "Install app"). It gets an icon, opens full-screen without the browser bar, and works without a connection. Progress carries over from the browser.'),
             el('h3', {}, 'No piano handy?'),
             el('p', {}, 'The letter keys on a computer keyboard play notes (A–K white, W E T Y U black, Z–M an octave down), and you can tap the keyboard at the bottom of the screen. Both work for every lesson, but the drills are meant for the real keys.'),
           ]),

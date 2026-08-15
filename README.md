@@ -24,8 +24,13 @@ Live: https://joshgreenman1973.github.io/home-row/
 | 6 | Reading the staff | Same drills, letters off, grand staff on (letters toggle available) |
 | 7 | Songs | Mary Had a Little Lamb, Twinkle, Ode to Joy, Frère Jacques, Row Your Boat, Jingle Bells, Happy Birthday; two left-hand versions |
 | 8 | Chords under the tune | C / F / G triads in the left hand, then three songs with chords |
+| 9 | Play along: Leonard Cohen | Chord progressions only (no melodies/lyrics — copyrighted): Hallelujah, Suzanne, So Long Marianne, Bird on the Wire, Famous Blue Raincoat, I'm Your Man, Everybody Knows, First We Take Manhattan. RH close voicing, LH root; sevenths as shells. Sharp keys transposed to C/Am and labelled. Source: Leonard Cohen Chords Archive (maartenmassa.be/CohenChords) |
 
 Random drills are seeded per round and weighted toward the keys the player has been missing (`weights` in localStorage). A round passes at 90% accuracy (timed rounds also need ≤15% missed clicks). Accuracy = correct presses / all presses. Speed = notes per minute from first press to last.
+
+## Installable
+
+`manifest.webmanifest` + `sw.js` make it a PWA: on Android Chrome, menu → Add to Home screen. Opens full-screen and works offline after the first load.
 
 ## Files
 

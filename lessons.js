@@ -305,4 +305,81 @@ const TYPING_MAP = {
   z: 48, x: 50, c: 52, v: 53, b: 55, n: 57, m: 59, ',': 60,
 };
 
-window.HR = { LESSONS, SONG_LIB, CHORD_SONGS, CHORDS, TYPING_MAP, RH_HOME, LH_HOME, RH_OCT, LH_OCT, noteName, fullName, isBlack, octaveOf, fingerFor, rng, parseNote };
+// ---------------------------------------------------------------------
+// LESSON 9 — Play along: Leonard Cohen.
+// Copyrighted songs, so no melodies and no lyrics here — only the chord
+// progressions, which is how these songs are actually played anyway.
+// Right hand plays a close voicing around middle C; left hand plays the
+// root. Sevenths use the "shell" trick: RH plays the triad a third up,
+// LH supplies the root (E7 = G# B D over E).
+// Progressions taken from the Leonard Cohen Chords Archive
+// (maartenmassa.be/CohenChords) and cross-checked with the recordings'
+// well-known keys. Where the record is in a sharp-heavy key, the lesson is
+// transposed to a white-key key and says so.
+// ---------------------------------------------------------------------
+const VOICE = {
+  // name: [rh notes], lh root pitch class
+  'C':   { rh: ['C4', 'E4', 'G4'], root: 'C' },
+  'Dm':  { rh: ['D4', 'F4', 'A4'], root: 'D' },
+  'Em':  { rh: ['B3', 'E4', 'G4'], root: 'E' },
+  'F':   { rh: ['C4', 'F4', 'A4'], root: 'F' },
+  'G':   { rh: ['B3', 'D4', 'G4'], root: 'G' },
+  'Am':  { rh: ['C4', 'E4', 'A4'], root: 'A' },
+  'Bb':  { rh: ['Bb3', 'D4', 'F4'], root: 'Bb' },
+  'D':   { rh: ['D4', 'F#4', 'A4'], root: 'D' },
+  'E':   { rh: ['B3', 'E4', 'G#4'], root: 'E' },
+  'E7':  { rh: ['B3', 'D4', 'G#4'], root: 'E' },
+  'B7':  { rh: ['A3', 'D#4', 'F#4'], root: 'B' },
+  'Bm7': { rh: ['D4', 'F#4', 'A4'], root: 'B' },
+  'Dm7': { rh: ['C4', 'F4', 'A4'], root: 'D' },
+  'Em7': { rh: ['B3', 'D4', 'G4'], root: 'E' },
+};
+const ROOT_OCT = { C: 3, 'C#': 3, D: 3, 'D#': 3, E: 3, F: 3, 'F#': 3, G: 2, 'G#': 2, A: 2, Bb: 2, 'A#': 2, B: 2 };
+function chordStep(name, mark) {
+  const v = VOICE[name]; if (!v) throw new Error('no voicing for ' + name);
+  const lh = parseNote(v.root.replace('Bb', 'A#') + ROOT_OCT[v.root]);
+  const s = { rh: v.rh.map(parseNote), lh: [lh], label: name };
+  if (mark) s.mark = mark;
+  return s;
+}
+// A progression string: bars separated by spaces, "|" ignored, [Verse] sets a section mark.
+function prog(str) {
+  const out = []; let mark = null;
+  for (const tok of str.trim().split(/\s+/)) {
+    if (tok === '|') continue;
+    const m = /^\[(.+)\]$/.exec(tok); if (m) { mark = m[1]; continue; }
+    out.push(chordStep(tok, mark)); mark = null;
+  }
+  return out;
+}
+const COHEN = [
+  { title: 'Hallelujah', key: 'Same key as the record (C).', bars: '[Verse] C Am C Am F G C G [Fourth,fifth…] F G Am F G E7 Am [Chorus] F Am F C G C' },
+  { title: 'Suzanne', key: 'Record is in E; this is the same shape in C.', bars: '[Verse] C Dm C Dm C Dm C Dm [Lift] Em F C Dm C Dm C' },
+  { title: 'So long, Marianne', key: 'Record is in A; this is C.', bars: '[Verse] C Dm F C Bb F Am G [Chorus] C Am G G C Am G G' },
+  { title: 'Bird on the wire', key: 'Record is in A; this is C.', bars: '[Verse] C G C F C G C C [Chorus] F C Dm C F C Dm G' },
+  { title: 'Famous blue raincoat', key: 'Same key as the record (A minor).', bars: '[Verse] Am F Dm7 Em7 Am F Dm7 Em7 Am Bm7 Am Bm7 Am G Am G [Chorus] C G Am Bm7 G F Em7' },
+  { title: "I'm your man", key: 'Record is in B minor; this is A minor.', bars: '[Verse] Dm Am F E Am G C Dm Am [Turn] Dm C Am F E Am' },
+  { title: 'Everybody knows', key: 'Record is a major third higher (C# minor); this is A minor.', bars: '[Verse] Am E Am Dm E G Am Bb E [Chorus] C G Am G F C' },
+  { title: 'First we take Manhattan', key: 'Record is a half-step higher; this is A minor.', bars: '[Verse] Am Em Am Em Am Em D C B7 [Chorus] G G D C D C B7 Em' },
+];
+LESSONS.push({
+  id: 'cohen',
+  num: 9,
+  title: 'Play along: Leonard Cohen',
+  blurb: 'The chords under Hallelujah, Suzanne, Famous Blue Raincoat and five more. Right hand chord, left hand root.',
+  letters: true, staff: true, hands: 'both',
+  guide: [
+    'These are the chord changes, one column per bar. Right hand plays the three notes shown; left hand plays the root underneath. Strike again at each bar.',
+    'New shapes: the minor chords (Am, Dm, Em) and a trick for sevenths — play the chord a third up with the right hand and let the left hand supply the root. E7 is G# B D over an E.',
+    'Nobody sings here (the songs are copyrighted, so there are no melodies or words in the app). Put the record on and play along; the label says whether the lesson is in the record’s key.',
+    'Go as slowly as you like. Cohen did.',
+  ],
+  rounds: [
+    () => ({ steps: prog('Am Am Dm Dm Em Em Am Am'), say: 'The three minor chords: Am, Dm, Em. Left hand root, right hand shape.' }),
+    () => ({ steps: prog('C Am F G C Am F G'), say: 'The four-chord loop under half of pop music: C Am F G.' }),
+    () => ({ steps: prog('E7 Am Bm7 Am Dm7 Em7 Am Am'), say: 'Sevenths: right hand plays the triad a third up, left hand plays the root.' }),
+    ...COHEN.map((s) => () => ({ steps: prog(s.bars), say: `${s.title} — ${s.key}` })),
+  ],
+});
+
+window.HR = { LESSONS, VOICE, COHEN, SONG_LIB, CHORD_SONGS, CHORDS, TYPING_MAP, RH_HOME, LH_HOME, RH_OCT, LH_OCT, noteName, fullName, isBlack, octaveOf, fingerFor, rng, parseNote };
