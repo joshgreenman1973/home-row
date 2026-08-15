@@ -4,6 +4,8 @@
   --paper: #ffffff;
   --felt: #d0021b;
   --felt-soft: #ffe3e6;
+  --left: #1849c8;
+  --left-soft: #dfe7fb;
   --grey: #8a8a8a;
   --rule: #d9d9d9;
   --pale: #f2f2f2;
@@ -96,7 +98,6 @@ main { overflow: auto; position: relative; }
 .drill svg { display: block; }
 .countin { position: absolute; top: 8px; right: 20px; font-family: var(--display); font-weight: 900; font-size: 90px; line-height: 1; color: var(--felt); opacity: 0; pointer-events: none; transition: opacity 0.1s; }
 .countin.show { opacity: 1; }
-.cursor-col { fill: var(--felt-soft); }
 .strip { transition: transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .staffline { stroke: var(--ink); stroke-width: 1.5; }
 .ledger { stroke: var(--ink); stroke-width: 1.5; }
@@ -113,9 +114,13 @@ main { overflow: auto; position: relative; }
 .col .big-letter.small { font-size: 30px; }
 .col .finger { font-size: 17px; font-weight: 700; fill: var(--grey); }
 .col.current .head, .col.current .hint, .col.current .big-letter, .col.current .finger, .col.current .acc { fill: var(--felt); }
+.col.current .head.lh, .col.current .hint.lh, .col.current .big-letter.lh, .col.current .finger.lh, .col.current .acc.lh { fill: var(--left); }
+.lane-label.rh { fill: var(--felt); } .lane-label.lh { fill: var(--left); }
+.cursor-col { fill: var(--pale); }
 .col.done .head, .col.done .hint, .col.done .big-letter, .col.done .finger, .col.done .acc { fill: var(--ink); }
 .col.done.slipped .head, .col.done.slipped .big-letter { fill: var(--ink); opacity: 0.45; }
 .col.missed .head, .col.missed .big-letter { fill: var(--felt); opacity: 0.35; }
+.col.missed .head.lh, .col.missed .big-letter.lh { fill: var(--left); }
 .col.shake { animation: shake 0.3s; }
 @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 .score { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 3px solid var(--ink); position: relative; }
@@ -146,12 +151,15 @@ main { overflow: auto; position: relative; }
 .wkey { fill: #fff; }
 .wkey.held { fill: #b9b9b9; }
 .wkey.target { fill: var(--felt); }
+.wkey.target.lh { fill: var(--left); }
 .wkey.target.held { fill: var(--ink); }
 .wkey.wrong, .bkey.wrong { fill: var(--felt); stroke: var(--felt); }
 .bkey { fill: var(--ink); stroke: #333; stroke-width: 2; }
 .bkey.held { fill: #555; }
 .bkey.target { fill: var(--felt); stroke: var(--felt); }
+.bkey.target.lh { fill: var(--left); stroke: var(--left); }
 .bkey.target.held { fill: #ff6b7a; }
+.bkey.target.lh.held { fill: #7b9af0; }
 .klabel { font-family: var(--display); font-weight: 700; font-size: 34px; fill: var(--grey); pointer-events: none; }
 .klabel.c4 { fill: var(--ink); }
 .klabel.hide { display: none; }

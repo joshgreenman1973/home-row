@@ -194,7 +194,7 @@
       let i = 0; const saveCursor = this.cursor;
       this.listenTimer = setInterval(() => {
         if (i >= this.steps.length) { this.stopListen(); return; }
-        ui.renderDrill(false, i); ui.renderPiano(new Set([...this.steps[i].rh, ...this.steps[i].lh])); i++;
+        ui.renderDrill(false, i); ui._forceStep = this.steps[i]; ui.renderPiano(new Set([...this.steps[i].rh, ...this.steps[i].lh])); i++;
       }, gap * 1000);
       this._restore = () => { this.cursor = saveCursor; ui.renderDrill(); ui.renderPiano(); if (this.lesson.timed && !this.finished) this.startTimed(); };
     },
@@ -405,7 +405,7 @@
         svg.append(g);
         // lane labels sit on top of the strip, with a white backing so done columns slide under them
         const usesRh = steps.some((s) => s.rh.length), usesLh = steps.some((s) => s.lh.length);
-        const laneLabel = (txt, y) => { const bg = sv('rect', { x: 0, y: y - 18, width: 12 + txt.length * 11, height: 26, class: 'lane-bg' }); const t = sv('text', { x: 10, y, class: 'lane-label' }); t.textContent = txt; svg.append(bg, t); };
+        const laneLabel = (txt, y) => { const bg = sv('rect', { x: 0, y: y - 18, width: 12 + txt.length * 11, height: 26, class: 'lane-bg' }); const t = sv('text', { x: 10, y, class: 'lane-label ' + (txt.startsWith('R') ? 'rh' : 'lh') }); t.textContent = txt; svg.append(bg, t); };
         const yR = showStaff ? trebleTop - 8 : trebleTop + 2 * SP + 6, yL = showStaff ? bassTop - 8 : bassTop + 2 * SP + 6;
         if (showStaff) { laneLabel('RIGHT HAND', yR); laneLabel('LEFT HAND', yL); }
         else if (usesRh && usesLh) { laneLabel('RIGHT', yR); laneLabel('LEFT', yL); }
@@ -422,26 +422,26 @@
               const bottom = hand === 'rh' ? TREBLE_BOTTOM_STEP : BASS_BOTTOM_STEP; const top = bottom + 8;
               for (let st = bottom - 2; st >= step; st -= 2) col.append(sv('line', { x1: x - 13, x2: x + 13, y1: hand === 'rh' ? yTreble(st) : yBass(st), y2: hand === 'rh' ? yTreble(st) : yBass(st), class: 'ledger' }));
               for (let st = top + 2; st <= step; st += 2) col.append(sv('line', { x1: x - 13, x2: x + 13, y1: hand === 'rh' ? yTreble(st) : yBass(st), y2: hand === 'rh' ? yTreble(st) : yBass(st), class: 'ledger' }));
-              col.append(sv('ellipse', { cx: x, cy: y, rx: SP * 0.58, ry: SP * 0.44, class: 'head', transform: `rotate(-18 ${x} ${y})` }));
-              if (H.isBlack(m)) { const a = sv('text', { x: x - 20, y: y + 5, class: 'acc' }); a.textContent = '♯'; col.append(a); }
+              col.append(sv('ellipse', { cx: x, cy: y, rx: SP * 0.58, ry: SP * 0.44, class: 'head ' + hand, transform: `rotate(-18 ${x} ${y})` }));
+              if (H.isBlack(m)) { const a = sv('text', { x: x - 20, y: y + 5, class: 'acc ' + hand }); a.textContent = '♯'; col.append(a); }
             } else {
               const cy = hand === 'rh' ? trebleTop + 2 * SP : bassTop + 2 * SP;
-              const t = sv('text', { x, y: cy + 24, class: 'big-letter', 'text-anchor': 'middle' }); t.textContent = H.noteName(m); col.append(t);
+              const t = sv('text', { x, y: cy + 24, class: 'big-letter ' + hand, 'text-anchor': 'middle' }); t.textContent = H.noteName(m); col.append(t);
               const f = H.fingerFor(m, hand);
-              if (f) { const ft = sv('text', { x, y: cy + 50, class: 'finger', 'text-anchor': 'middle' }); ft.textContent = f; col.append(ft); }
+              if (f) { const ft = sv('text', { x, y: cy + 50, class: 'finger ' + hand, 'text-anchor': 'middle' }); ft.textContent = f; col.append(ft); }
             }
           };
           // stack chords slightly so they don't overlap when letters mode
           if (!showStaff && s.lh.length > 1) {
-            const cy = bassTop + 2 * SP; s.lh.forEach((m, k) => { const t = sv('text', { x, y: cy + 34 - (s.lh.length - 1 - k) * 27, class: 'big-letter small', 'text-anchor': 'middle' }); t.textContent = H.noteName(m); col.append(t); });
+            const cy = bassTop + 2 * SP; s.lh.forEach((m, k) => { const t = sv('text', { x, y: cy + 34 - (s.lh.length - 1 - k) * 27, class: 'big-letter small lh', 'text-anchor': 'middle' }); t.textContent = H.noteName(m); col.append(t); });
           } else s.lh.forEach((m) => drawNote(m, 'lh'));
           s.rh.forEach((m) => drawNote(m, 'rh'));
           if (showStaff && showLetters) {
-            const hint = (notes, y) => { if (!notes.length) return; const t = sv('text', { x, y, class: 'hint' + (notes.length > 1 ? ' chord' : ''), 'text-anchor': 'middle' }); t.textContent = notes.map(H.noteName).join(' '); col.append(t); };
+            const hint = (notes, y, hand) => { if (!notes.length) return; const t = sv('text', { x, y, class: 'hint ' + hand + (notes.length > 1 ? ' chord' : ''), 'text-anchor': 'middle' }); t.textContent = notes.map(H.noteName).join(' '); col.append(t); };
             if (s.label) {
-              const t = sv('text', { x, y: trebleTop - 10, class: 'hint chordname', 'text-anchor': 'middle' }); t.textContent = s.label; col.append(t);
-              hint(s.lh, bassBottom + 24);
-            } else { hint(s.rh, trebleTop - 10); hint(s.lh, bassBottom + 24); }
+              const t = sv('text', { x, y: trebleTop - 10, class: 'hint chordname rh', 'text-anchor': 'middle' }); t.textContent = s.label; col.append(t);
+              hint(s.lh, bassBottom + 24, 'lh');
+            } else { hint(s.rh, trebleTop - 10, 'rh'); hint(s.lh, bassBottom + 24, 'lh'); }
           }
           if (s.mark) { const mk = sv('text', { x: x - colW / 2 + 4, y: 16, class: 'mark' }); mk.textContent = s.mark.toUpperCase(); col.append(mk); }
           g.append(col); this.cols.push(col);
@@ -492,6 +492,8 @@
     renderPiano(forceTargets = null) {
       const p = $('#piano'); if (!p) return;
       const targets = forceTargets || (this.screen === 'lesson' && eng.running && !eng.listening ? eng.expected() : new Set());
+      const curStep = this.screen === 'lesson' && eng.steps ? (forceTargets ? this._forceStep : eng.steps[eng.cursor]) : null;
+      const lhSet = new Set(curStep ? curStep.lh : []);
       const held = input.held;
       const first = 21, last = 108; // A0..C8
       const wW = 100, wH = 420, bW = 60, bH = 260;
@@ -520,7 +522,7 @@
       for (let m = first; m <= last; m++) {
         const k = this.keyEls[m]; if (!k) continue;
         const cls = [H.isBlack(m) ? 'bkey' : 'wkey'];
-        if (targets.has(m)) cls.push('target');
+        if (targets.has(m)) cls.push(lhSet.has(m) && !(curStep && curStep.rh.includes(m)) ? 'target lh' : 'target rh');
         if (held.has(m)) cls.push(targets.size && !targets.has(m) ? 'held wrongish' : 'held');
         if (this.wrongKey === m) cls.push('wrong');
         k.el.setAttribute('class', cls.join(' '));

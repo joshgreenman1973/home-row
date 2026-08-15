@@ -173,7 +173,7 @@ const LESSONS = [
     letters: true, staff: false, hands: 'both',
     guide: [
       'Both hands in home position: left pinky on low C, right thumb on middle C.',
-      'The top lane is your right hand. The bottom lane is your left.',
+      'The top lane is your right hand, in red. The bottom lane is your left, in blue. The piano keys light up in the same colors.',
       'When a column has a note in both lanes, press them together.',
     ],
     rounds: [
@@ -237,7 +237,7 @@ const LESSONS = [
     guide: [
       'Higher on the staff means higher on the piano. Every line and space is the next white key.',
       'Middle C sits on its own little line between the two staves.',
-      'Top staff is the right hand. Bottom staff is the left.',
+      'Top staff is the right hand (red). Bottom staff is the left (blue).',
       'Stuck? The "letters" switch turns the hints back on.',
     ],
     rounds: [
